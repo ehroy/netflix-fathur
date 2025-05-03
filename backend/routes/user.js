@@ -10,6 +10,11 @@ import { authorize } from "../middleware/role.js";
 const router = express.Router();
 
 router.get("/", authenticate, authorize(["admin"]), listUsers);
-router.post("/assign", authenticate, authorize(["admin"]), assignEmailToUser);
+router.post(
+  "/allowlist",
+  authenticate,
+  authorize(["admin"]),
+  assignEmailToUser
+);
 router.post("/delete", authenticate, authorize(["admin"]), deleteUser);
 export default router;
