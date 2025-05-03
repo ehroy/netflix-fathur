@@ -1,80 +1,57 @@
-import Imap from "imap";
-import { simpleParser } from "mailparser";
 import dotenv from "dotenv";
-
-// Load environment variables
 dotenv.config();
+import imaps from "imap-simple";
+import { simpleParser } from "mailparser";
 
-export const fetchEmails = (filterEmail) => {
-  return new Promise((resolve, reject) => {
-    const imap = new Imap({
+export const fetchEmails = async (filterEmail) => {
+  const config = {
+    imap: {
       user: process.env.EMAIL_USER,
       password: process.env.EMAIL_PASSWORD,
       host: "imap.gmail.com",
       port: 993,
-      authTimeout: 60000,
-      tls: false,
-    });
-    console.log(process.env.EMAIL_USER);
-    const messages = [];
+      authTimeout: 10000,
+      tls: true,
+      tlsOptions: { rejectUnauthorized: false },
+    },
+  };
 
-    function openInbox(cb) {
-      imap.openBox("INBOX", true, cb);
-    }
+  try {
+    const connection = await imaps.connect(config);
+    await connection.openBox("INBOX");
 
-    imap.once("ready", () => {
-      openInbox((err, box) => {
-        if (err) return reject(err);
+    const searchCriteria = ["ALL", ["TO", filterEmail]];
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+    const fetchOptions = {
+      bodies: ["HEADER", "TEXT"],
+      markSeen: false,
+    };
 
-        imap.search(["ALL", ["SINCE", today]], (err, results) => {
-          if (err || !results || results.length === 0) {
-            imap.end();
-            return resolve([]);
+    const results = await connection.search(searchCriteria, fetchOptions);
+    console.log(results);
+    const messages = await Promise.all(
+      results.map(async (item) => {
+        const all = item.parts.find((part) => part.which === "");
+        console.log(item);
+        const parsed = await simpleParser(all.body);
+
+        if (parsed.date > oneDayAgo) {
+          if (!filterEmail || parsed.from.text.includes(filterEmail)) {
+            return {
+              subject: parsed.subject,
+              from: parsed.from.text,
+              date: parsed.date,
+              text: parsed.text,
+            };
           }
+        }
+        return null;
+      })
+    );
 
-          const fetch = imap.fetch(results.slice(-50), {
-            bodies: "",
-            struct: true,
-          });
-
-          fetch.on("message", (msg) => {
-            msg.on("body", (stream) => {
-              simpleParser(stream, (err, parsed) => {
-                if (!err && parsed.date) {
-                  const now = new Date();
-                  const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
-
-                  // Filter email by time and optional sender email
-                  if (parsed.date > oneHourAgo) {
-                    if (
-                      !filterEmail ||
-                      parsed.from.text.includes(filterEmail)
-                    ) {
-                      messages.push({
-                        subject: parsed.subject,
-                        from: parsed.from.text,
-                        date: parsed.date,
-                        text: parsed.text,
-                      });
-                    }
-                  }
-                }
-              });
-            });
-          });
-
-          fetch.once("end", () => {
-            imap.end();
-            resolve(messages);
-          });
-        });
-      });
-    });
-
-    imap.once("error", (err) => reject(err));
-    imap.connect();
-  });
+    await connection.end();
+    return messages.filter((msg) => msg !== null);
+  } catch (err) {
+    throw new Error("IMAP error: " + err.message);
+  }
 };
