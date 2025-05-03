@@ -54,24 +54,20 @@ const login = async () => {
   try {
     const respon = await LoginUser(email.value, password.value);
     if (respon.status === 200) {
-      router.push("/dashboard");
+      const user = respon.data?.user || {}; // pastikan response ada field user
+
+      if (user.role === "admin") {
+        router.push("/dashboard");
+      } else if (user.role === "user") {
+        router.push("/email");
+      } else {
+        router.push("/unauthorized");
+      }
     } else {
-      router.push("/");
+      error.value = "Gagal login.";
     }
   } catch (err) {
     error.value = err.response?.data?.message || "Login failed !!";
   }
 };
-// onMounted(async () => {
-//   try {
-//     const [loginRes] = await Promise.all([
-//       LoginUser(email.value, password.value),
-//     ]);
-//     console.log(loginRes);
-//   } catch (err) {
-//     error.value = "Gagal mengambil data";
-//   } finally {
-//     loading.value = false;
-//   }
-// });
 </script>
