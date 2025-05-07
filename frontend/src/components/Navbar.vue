@@ -1,39 +1,11 @@
 <template>
-  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg">
+  <nav class="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg px-10">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <div class="flex-shrink-0 flex items-center">
             <i class="fas fa-users-cog text-white text-2xl mr-2"></i>
-            <span class="text-white font-bold text-xl">UserAdmin</span>
-          </div>
-          <div class="hidden md:ml-6 md:flex md:space-x-8">
-            <router-link
-              to="/dashboard"
-              class="border-b-2 border-transparent text-gray-200 hover:text-white hover:border-gray-300 px-1 pt-1 text-sm font-medium"
-              :class="{
-                'border-white text-white': currentRoute === '/dashboard',
-              }"
-            >
-              Dashboard
-            </router-link>
-            <router-link
-              to="/users"
-              class="border-b-2 border-transparent text-gray-200 hover:text-white hover:border-gray-300 px-1 pt-1 text-sm font-medium"
-              :class="{ 'border-white text-white': currentRoute === '/users' }"
-            >
-              Users
-            </router-link>
-
-            <router-link
-              to="/permissions"
-              class="border-b-2 border-transparent text-gray-200 hover:text-white hover:border-gray-300 px-1 pt-1 text-sm font-medium"
-              :class="{
-                'border-white text-white': currentRoute === '/permissions',
-              }"
-            >
-              Permissions
-            </router-link>
+            <span class="text-white font-bold text-xl">DASHBOARD ADMIN</span>
           </div>
         </div>
         <div class="flex items-center">
@@ -46,18 +18,6 @@
             </button>
           </div>
           <div class="hidden md:ml-4 md:flex md:items-center">
-            <button
-              @click="showNotifications"
-              class="bg-blue-500 p-1 rounded-full text-white hover:bg-blue-600 focus:outline-none"
-            >
-              <span class="sr-only">View notifications</span>
-              <i class="fas fa-bell text-lg px-1"></i>
-              <span
-                v-if="unreadNotifications"
-                class="absolute top-3 right-3 transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full h-4 w-4 flex items-center justify-center text-xs text-white"
-                >{{ unreadNotifications }}</span
-              >
-            </button>
             <div class="ml-3 relative user-menu">
               <div>
                 <button
@@ -110,31 +70,6 @@
 
     <!-- Mobile menu -->
     <div v-if="isMobileMenuOpen" class="md:hidden bg-indigo-800">
-      <div class="px-2 pt-2 pb-3 space-y-1">
-        <router-link
-          to="/dashboard"
-          class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-indigo-700 hover:text-white"
-          :class="{ 'bg-indigo-900 text-white': currentRoute === '/dashboard' }"
-        >
-          Dashboard
-        </router-link>
-        <router-link
-          to="/users"
-          class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-indigo-700 hover:text-white"
-          :class="{ 'bg-indigo-900 text-white': currentRoute === '/users' }"
-        >
-          User List
-        </router-link>
-        <router-link
-          to="/permissions"
-          class="block px-3 py-2 rounded-md text-base font-medium text-gray-200 hover:bg-indigo-700 hover:text-white"
-          :class="{
-            'bg-indigo-900 text-white': currentRoute === '/permissions',
-          }"
-        >
-          Permissions
-        </router-link>
-      </div>
       <div class="pt-4 pb-3 border-t border-indigo-700">
         <div class="flex items-center px-5">
           <div class="flex-shrink-0">

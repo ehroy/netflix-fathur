@@ -15,3 +15,9 @@ export const AddUser = (email, password) => {
 export const DeleteUser = (id) => {
   return axios.post(`/users/delete`, { id: id });
 };
+export const GetUser = () => {
+  return axios.get(`/users`);
+};
+export const DeleteAllowList = (id, email) => {
+  return axios.post(`/users/allowlist/delete`, { id: id, email: email });
+};

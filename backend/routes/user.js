@@ -3,6 +3,7 @@ import {
   listUsers,
   assignEmailToUser,
   deleteUser,
+  deleteAllowEmail,
 } from "../controllers/userController.js";
 import { authenticate } from "../middleware/auth.js";
 import { authorize } from "../middleware/role.js";
@@ -15,6 +16,12 @@ router.post(
   authenticate,
   authorize(["admin"]),
   assignEmailToUser
+);
+router.post(
+  "/allowlist/delete",
+  authenticate,
+  authorize(["admin"]),
+  deleteAllowEmail
 );
 router.post("/delete", authenticate, authorize(["admin"]), deleteUser);
 export default router;
