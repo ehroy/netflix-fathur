@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/admin/DashboardView.vue";
+import UserTable from "@/components/base/admin/UserTable.vue";
 import { checkAuth } from "@/auth.js";
 import api from "@/axios";
 import UserMenu from "@/views/user/MenuView.vue";
@@ -12,6 +13,12 @@ const routes = [
     path: "/dashboard",
     name: "DashboardView",
     component: DashboardView,
+    meta: { role: "admin" },
+  },
+  {
+    path: "/dashboard/user",
+    name: "UserTable",
+    component: UserTable,
     meta: { role: "admin" },
   },
   {
