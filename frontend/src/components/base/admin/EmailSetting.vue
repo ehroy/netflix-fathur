@@ -289,7 +289,7 @@
   </DashboardLayout>
 </template>
 <script setup>
-import DashboardLayout from "@/layout/DashboardLayout.vue";
+import DashboardLayout from "@/layout/admin/DashboardLayout.vue";
 import { ref } from "vue";
 const emails = ref([
   {

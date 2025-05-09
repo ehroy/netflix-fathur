@@ -24,3 +24,8 @@ export const DeleteAllowList = (id, email) => {
 export const AddAllowlist = (id, email) => {
   return axios.post(`/users/allowlist`, { id: id, email: email });
 };
+export const SearchEmail = (email) => {
+  return axios.post(`/emails`, {
+    email: email,
+  });
+};

@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import imaps from "imap-simple";
+import moment from "moment";
 import { simpleParser } from "mailparser";
 
 export const fetchEmails = async (filterEmail) => {
@@ -15,42 +16,55 @@ export const fetchEmails = async (filterEmail) => {
       tlsOptions: { rejectUnauthorized: false },
     },
   };
+  console.log(config);
 
   try {
+    const oneHourAgo = moment().subtract(24, "hour");
+    const today = moment().startOf("day").toDate();
+    const sevenDaysAgo = moment().subtract(2, "days").toDate();
     const connection = await imaps.connect(config);
     await connection.openBox("INBOX");
 
-    const searchCriteria = ["ALL", ["TO", filterEmail]];
+    const searchCriteria = [
+      "ALL",
+      ["TO", filterEmail.toLowerCase()],
+      ["SINCE", sevenDaysAgo.toUTCString()],
+    ];
 
     const fetchOptions = {
-      bodies: ["HEADER", "TEXT"],
+      bodies: ["HEADER", "TEXT", ""],
       markSeen: false,
     };
 
     const results = await connection.search(searchCriteria, fetchOptions);
     console.log(results);
-    const messages = await Promise.all(
-      results.map(async (item) => {
-        const all = item.parts.find((part) => part.which === "");
-        console.log(item);
-        const parsed = await simpleParser(all.body);
+    const parsedEmails = await Promise.all(
+      results.map(async (email) => {
+        const headerPart = email.parts.find((part) => part.which === "HEADER");
+        const rawPart = email.parts.find((part) => part.which === ""); // Ini raw MIME
 
-        if (parsed.date > oneDayAgo) {
-          if (!filterEmail || parsed.from.text.includes(filterEmail)) {
-            return {
-              subject: parsed.subject,
-              from: parsed.from.text,
-              date: parsed.date,
-              text: parsed.text,
-            };
-          }
+        const headers = headerPart?.body;
+
+        // Parse isi email menggunakan mailparser
+        let textBody = "";
+        if (rawPart?.body) {
+          const parsed = await simpleParser(rawPart.body);
+          textBody = parsed.text || parsed.html || "";
         }
-        return null;
+
+        return {
+          subject: headers?.subject?.[0] || "",
+          to: headers?.to?.[0] || "",
+          date: email.attributes.date,
+          body: textBody, // ✅ Hasil parsing body text
+        };
       })
     );
 
+    console.log("Email dari 1 jam terakhir dan pengirim:", parsedEmails);
+
     await connection.end();
-    return messages.filter((msg) => msg !== null);
+    return parsedEmails;
   } catch (err) {
     throw new Error("IMAP error: " + err.message);
   }

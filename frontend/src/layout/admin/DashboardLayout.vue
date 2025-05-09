@@ -12,6 +12,6 @@
   </div>
 </template>
 <script setup>
-import AdminLayout from "@/layout/AdminLayout.vue";
-import Navbar from "@/layout/Navbar.vue";
+import AdminLayout from "@/layout/admin/AdminLayout.vue";
+import Navbar from "@/layout/admin/Navbar.vue";
 </script>

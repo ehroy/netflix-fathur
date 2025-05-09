@@ -241,7 +241,7 @@
   </DashboardLayout>
 </template>
 <script setup>
-import DashboardLayout from "@/layout/DashboardLayout.vue";
+import DashboardLayout from "@/layout/admin/DashboardLayout.vue";
 import { ref, onMounted } from "vue";
 import {
   DeleteUser,

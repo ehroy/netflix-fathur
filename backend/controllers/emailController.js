@@ -16,8 +16,19 @@ export const getEmails = async (req, res) => {
   }
 
   try {
-    const messages = await fetchEmails(account);
-    res.json(messages);
+    const messages = await fetchEmails(req.body.email);
+    if (messages.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "Pesan Tidak Tersedia", mailbox: messages });
+    }
+    return res
+      .status(200)
+      .json({
+        message: "Success Fetch Email",
+        tersedia: messages.length,
+        mailbox: messages,
+      });
   } catch (err) {
     console.log(err);
     res
