@@ -54,15 +54,7 @@ const login = async () => {
   try {
     const respon = await LoginUser(email.value, password.value);
     if (respon.status === 200) {
-      const user = respon.data?.user || {}; // pastikan response ada field user
-
-      if (user.role === "admin") {
-        router.push("/dashboard");
-      } else if (user.role === "user") {
-        router.push("/email");
-      } else {
-        router.push("/unauthorized");
-      }
+      router.push("/dashboard");
     } else {
       error.value = "Gagal login.";
     }

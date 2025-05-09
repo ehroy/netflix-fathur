@@ -69,220 +69,92 @@
         </div>
       </div>
 
-      <div class="p-4">
-        <div class="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="border rounded-lg p-4">
-            <h4 class="text-md font-medium mb-4">IMAP Configuration</h4>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >IMAP Server</label
-                >
-                <input
-                  type="text"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="imap.example.com"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Port</label
-                >
-                <input
-                  type="text"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="993"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Username</label
-                >
-                <input
-                  type="text"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="username@example.com"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Password</label
-                >
-                <input
-                  type="password"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="••••••••"
-                />
-              </div>
-              <div class="flex items-center">
-                <input
-                  type="checkbox"
-                  id="use-ssl"
-                  class="rounded text-blue-500 focus:ring-blue-500"
-                />
-                <label for="use-ssl" class="ml-2 block text-sm text-gray-700"
-                  >Use SSL</label
-                >
-              </div>
-              <div class="pt-2">
-                <button
-                  class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full"
-                >
-                  Save Configuration
-                </button>
-              </div>
-            </div>
+      <!-- Main Content -->
+      <div class="ml-64 p-10">
+        <div
+          class="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow space-y-8"
+        >
+          <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-semibold">IMAP Search Settings</h1>
+            <button
+              @click="saveSetting"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Simpan
+            </button>
           </div>
 
-          <div class="border rounded-lg p-4">
-            <h4 class="text-md font-medium mb-4">Email Search Filters</h4>
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >From</label
-                >
-                <input
-                  type="text"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="sender@example.com"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Subject Contains</label
-                >
-                <input
-                  type="text"
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="keywords"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Date Range</label
-                >
-                <div class="grid grid-cols-2 gap-2">
-                  <input
-                    type="date"
-                    class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                  <input
-                    type="date"
-                    class="rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1"
-                  >Folder</label
-                >
-                <select
-                  class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option>INBOX</option>
-                  <option>Sent</option>
-                  <option>Drafts</option>
-                  <option>Spam</option>
-                  <option>Trash</option>
-                </select>
-              </div>
-              <div class="pt-2">
-                <button
-                  class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg w-full"
-                >
-                  Search
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto border rounded-lg">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  <input
-                    type="checkbox"
-                    class="rounded text-blue-500 focus:ring-blue-500"
-                  />
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  From
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Subject
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Date
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Size
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr
-                v-for="email in emails"
-                :key="email.id"
-                :class="{ 'bg-blue-50': email.unread }"
+          <!-- Subjects -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Subjects</label
+            >
+            <div class="flex flex-wrap gap-2 mb-4">
+              <span
+                v-for="(s, i) in setting.subjects"
+                :key="i"
+                class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center"
               >
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <input
-                    type="checkbox"
-                    class="rounded text-blue-500 focus:ring-blue-500"
-                  />
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm" :class="{ 'font-bold': email.unread }">
-                    {{ email.from }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm" :class="{ 'font-bold': email.unread }">
-                    {{ email.subject }}
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ email.date }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-500">{{ email.size }}</div>
-                </td>
-                <td
-                  class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+                {{ s }}
+                <button
+                  @click="removeSubject(i)"
+                  class="ml-2 text-red-500 hover:text-red-700"
                 >
-                  <button class="text-blue-600 hover:text-blue-900 mr-3">
-                    View
-                  </button>
-                  <button class="text-red-600 hover:text-red-900">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+                  &times;
+                </button>
+              </span>
+            </div>
+            <div class="flex gap-2">
+              <input
+                v-model="newSubject"
+                @keyup.enter="addSubject"
+                type="text"
+                placeholder="Tambahkan subject..."
+                class="border rounded px-3 py-2 w-full"
+              />
+              <button
+                @click="addSubject"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Tambah
+              </button>
+            </div>
+          </div>
+
+          <!-- Folder -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Folder</label
+            >
+            <input
+              v-model="setting.folder"
+              type="text"
+              class="border rounded px-3 py-2 w-full"
+              placeholder="Contoh: INBOX"
+            />
+          </div>
+
+          <!-- Since -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2"
+              >Since (Tanggal Awal)</label
+            >
+            <input
+              v-model="setting.since"
+              type="date"
+              class="border rounded px-3 py-2 w-full"
+            />
+          </div>
+
+          <!-- Delete Button -->
+          <div class="flex justify-end">
+            <button
+              @click="deleteSetting"
+              class="text-red-600 border border-red-600 px-4 py-2 rounded hover:bg-red-50"
+            >
+              Hapus Setting
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -291,46 +163,45 @@
 <script setup>
 import DashboardLayout from "@/layout/admin/DashboardLayout.vue";
 import { ref } from "vue";
-const emails = ref([
-  {
-    id: 1,
-    from: "support@example.com",
-    subject: "Your account has been created",
-    date: "10 May 2025",
-    size: "15 KB",
-    unread: true,
-  },
-  {
-    id: 2,
-    from: "noreply@service.com",
-    subject: "Password reset request",
-    date: "09 May 2025",
-    size: "22 KB",
-    unread: false,
-  },
-  {
-    id: 3,
-    from: "team@company.org",
-    subject: "Weekly Report: System Performance",
-    date: "08 May 2025",
-    size: "340 KB",
-    unread: false,
-  },
-  {
-    id: 4,
-    from: "alerts@monitoring.io",
-    subject: "URGENT: System Alert",
-    date: "07 May 2025",
-    size: "5 KB",
-    unread: true,
-  },
-  {
-    id: 5,
-    from: "newsletter@updates.com",
-    subject: "May Newsletter",
-    date: "05 May 2025",
-    size: "120 KB",
-    unread: false,
-  },
-]);
+import axios from "axios";
+
+const setting = ref({
+  subjects: [],
+  folder: "INBOX",
+  since: new Date().toISOString().split("T")[0],
+});
+
+const newSubject = ref("");
+const settingId = "ganti_dengan_id_setting";
+
+const loadSetting = async () => {
+  const res = await axios.get(`/api/settings/${settingId}`);
+  setting.value = res.data;
+};
+
+const addSubject = () => {
+  const subject = newSubject.value.trim();
+  if (subject && !setting.value.subjects.includes(subject)) {
+    setting.value.subjects.push(subject);
+    newSubject.value = "";
+  }
+};
+
+const removeSubject = (index) => {
+  setting.value.subjects.splice(index, 1);
+};
+
+const saveSetting = async () => {
+  await axios.put(`/api/settings/${settingId}`, setting.value);
+  alert("Setting disimpan!");
+};
+
+const deleteSetting = async () => {
+  if (confirm("Yakin ingin menghapus setting ini?")) {
+    await axios.delete(`/api/settings/${settingId}`);
+    alert("Setting dihapus!");
+  }
+};
+
+loadSetting();
 </script>

@@ -1,5 +1,7 @@
 <!-- Email Wishlist Dashboard menggunakan Vue.js dan Tailwind CSS -->
 <template>
+  <Navbar />
+
   <DashboardLayout />
   <div class="md:ml-64 p-6">
     <div class="flex justify-between items-center mb-6">
@@ -29,7 +31,7 @@
       <div
         v-for="email in emails"
         :key="email.id"
-        class="border-b border-gray-200 hover:bg-gray-50 cursor-pointer p-4"
+        class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer p-4"
         @click="selectEmail(email)"
       >
         <div class="flex justify-between items-center">
@@ -45,7 +47,7 @@
       <!-- Modal -->
       <div
         v-if="selectedEmail"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+        class="fixed inset-0 bg-transparent backdrop-blur-sm bg-opacity-50 flex items-center justify-center z-50 px-4"
         @click.self="selectedEmail = null"
       >
         <div
@@ -64,18 +66,13 @@
           <div class="text-sm text-gray-500 mb-1">
             Dari: {{ selectedEmail.sender }} - {{ selectedEmail.date }}
           </div>
-          <div class="text-gray-800 mt-4 prose max-w-full">
-            <pre>{{ selectedEmail.body }}</pre>
-            <div v-if="netflixLinks.length" class="mt-4">
-              <div class="font-semibold">Link Netflix Ditemukan:</div>
-              <ul class="list-disc list-inside text-blue-600">
-                <li v-for="(link, index) in netflixLinks" :key="index">
-                  <a :href="link" target="_blank" class="underline">{{
-                    link
-                  }}</a>
-                </li>
-              </ul>
-            </div>
+          <div class="mt-4 prose max-w-full text-center text-white">
+            <button
+              @click="redirectToLink"
+              class="bg-red-500 text-white p-2 rounded-md"
+            >
+              Netflix Verify
+            </button>
           </div>
         </div>
       </div>
@@ -84,8 +81,14 @@
 </template>
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import Navbar from "@/layout/admin/Navbar.vue";
 import DashboardLayout from "@/layout/user/DashboardLayout.vue";
 import { SearchEmail } from "@/services/userServices.js";
+
+function extractLinkFromText(text) {
+  const match = text?.match(/\[(https:\/\/[^\]]+)\]/);
+  return match?.[1] || "";
+}
 const sidebarOpen = ref(false);
 const searchQuery = ref("");
 const selectedEmail = ref(null);
@@ -114,6 +117,17 @@ const searchEmails = async () => {
     emails.value = data.data.mailbox;
   } catch (err) {
     console.error("Gagal mencari email:", err);
+  }
+};
+const extractedLink = computed(() => {
+  return selectedEmail.value
+    ? extractLinkFromText(selectedEmail.value.body)
+    : "";
+});
+
+const redirectToLink = () => {
+  if (extractedLink.value) {
+    window.open(extractedLink.value, "_blank");
   }
 };
 </script>

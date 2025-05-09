@@ -1,5 +1,6 @@
 <template>
   <!-- Sidebar -->
+
   <div
     class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white transition-transform duration-300 ease-in-out"
   >
@@ -21,3 +22,4 @@
     </div>
   </div>
 </template>
+<script setup></script>
