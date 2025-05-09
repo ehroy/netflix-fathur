@@ -21,3 +21,6 @@ export const GetUser = () => {
 export const DeleteAllowList = (id, email) => {
   return axios.post(`/users/allowlist/delete`, { id: id, email: email });
 };
+export const AddAllowlist = (id, email) => {
+  return axios.post(`/users/allowlist`, { id: id, email: email });
+};

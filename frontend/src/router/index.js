@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import LoginView from "@/views/LoginView.vue";
 import DashboardView from "@/views/admin/DashboardView.vue";
 import UserTable from "@/components/base/admin/UserTable.vue";
+import EmailSetting from "@/components/base/admin/EmailSetting.vue";
+
 import { checkAuth } from "@/auth.js";
 import api from "@/axios";
 import UserMenu from "@/views/user/MenuView.vue";
@@ -19,6 +21,12 @@ const routes = [
     path: "/dashboard/user",
     name: "UserTable",
     component: UserTable,
+    meta: { role: "admin" },
+  },
+  {
+    path: "/dashboard/imap-settings",
+    name: "EmailSetting",
+    component: EmailSetting,
     meta: { role: "admin" },
   },
   {

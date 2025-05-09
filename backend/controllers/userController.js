@@ -8,12 +8,12 @@ export const listUsers = async (req, res) => {
 };
 
 export const assignEmailToUser = async (req, res) => {
-  const { userId, emailAccountId } = req.body;
-  const user = await User.findById(userId);
+  const { id, email } = req.body;
+  const user = await User.findById(id);
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  if (!user.allowedEmails.includes(emailAccountId)) {
-    user.allowedEmails.push(emailAccountId);
+  if (!user.allowedEmails.includes(email)) {
+    user.allowedEmails.push(email);
     await user.save();
   }
 

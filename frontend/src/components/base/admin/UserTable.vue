@@ -1,6 +1,5 @@
 <template>
-  <div class="flex h-screen bg-gray-100">
-    <AdminLayout />
+  <DashboardLayout>
     <!-- User Management Content -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
       <div
@@ -31,8 +30,10 @@
             </svg>
           </div>
 
+          <!-- Tombol untuk memunculkan form -->
           <button
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center"
+            @click="showForm = true"
+            class="mb-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center"
           >
             <svg
               class="w-5 h-5 mr-1"
@@ -45,10 +46,29 @@
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-              ></path>
+              />
             </svg>
             Add User
           </button>
+
+          <!-- Modal -->
+          <div
+            v-if="showForm"
+            class="fixed inset-0 z-50 flex items-center justify-center"
+          >
+            <!-- Overlay -->
+            <div
+              class="absolute inset-0 bg-transparent bg-opacity-50 backdrop-blur-sm bg-opacity-60"
+              @click="showForm = false"
+            ></div>
+
+            <!-- Modal Form -->
+            <div
+              class="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md z-10"
+            >
+              <UserForm @submit="handleUserSubmit" @cancel="showForm = false" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -78,7 +98,7 @@
                 scope="col"
                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               >
-                Status
+                Email Allowlist
               </th>
               <th
                 scope="col"
@@ -112,149 +132,222 @@
                 <div class="text-sm text-gray-900">{{ user.role }}</div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <span
-                  :class="[
-                    'px-2 inline-flex text-xs leading-5 font-semibold rounded-full',
-                    user.status === 'Active'
-                      ? 'bg-green-100 text-green-800'
-                      : user.status === 'Inactive'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-yellow-100 text-yellow-800',
-                  ]"
-                >
-                  {{ user.status }}
-                </span>
+                <div class="text-sm text-gray-900">
+                  {{ user.allowedEmails.length }}
+                </div>
               </td>
               <td
                 class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
               >
-                <button class="text-blue-600 hover:text-blue-900 mr-3">
+                <button
+                  @click="openEditModal(user)"
+                  class="text-blue-600 hover:text-blue-900 mr-3"
+                >
                   Edit
                 </button>
-                <button class="text-red-600 hover:text-red-900">Delete</button>
+                <button
+                  @click="deleteUser(user._id)"
+                  class="text-red-600 hover:text-red-900"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-
       <div
-        class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6"
+        v-if="showModal"
+        class="fixed inset-0 bg-transparent bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50"
       >
-        <div class="flex-1 flex justify-between sm:hidden">
-          <button
-            class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Previous
-          </button>
-          <button
-            class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-          >
-            Next
-          </button>
-        </div>
-        <div
-          class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
-        >
-          <div>
-            <p class="text-sm text-gray-700">
-              Showing <span class="font-medium">1</span> to
-              <span class="font-medium">10</span> of
-              <span class="font-medium">20</span> results
-            </p>
-          </div>
-          <div>
-            <nav
-              class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
-              aria-label="Pagination"
+        <div class="bg-white rounded-lg p-6 w-full max-w-xl">
+          <div class="flex justify-between">
+            <h2 class="text-xl font-bold mb-4">Edit User</h2>
+            <button
+              type="button"
+              @click="closeModal"
+              class="px-4 py-2 bg-red-500 text-white rounded flex"
             >
-              <button
-                class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fill-rule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-              <button
-                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                1
-              </button>
-              <button
-                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                2
-              </button>
-              <button
-                class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                3
-              </button>
-              <button
-                class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-              >
-                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fill-rule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </button>
-            </nav>
+              Cancel
+            </button>
           </div>
+
+          <!-- Form -->
+          <form @submit.prevent="saveChanges">
+            <div class="mb-4">
+              <label class="block text-sm font-medium">Email Allowlist</label>
+
+              <!-- Input untuk menambahkan email baru -->
+              <input
+                v-model="newEmail"
+                @keyup.enter="addEmail"
+                class="w-full border p-2 rounded mb-2"
+                type="email"
+                placeholder="Add new email"
+              />
+
+              <!-- Tombol untuk menambahkan email ke list -->
+              <button
+                @click="addEmail"
+                class="px-4 py-2 bg-blue-600 text-white rounded mb-4"
+              >
+                Add Email
+              </button>
+
+              <!-- Daftar email yang sudah ditambahkan -->
+              <ul>
+                <li
+                  v-for="(email, index) in editForm.allowlist_email"
+                  :key="index"
+                  class="flex justify-between items-center mb-2 border px-2"
+                >
+                  <label class="flex items-center gap-2 w-full">
+                    <input
+                      type="checkbox"
+                      :value="email"
+                      v-model="selectedEmails"
+                    />
+                    <span class="flex-1">{{ email }}</span>
+                    <button
+                      type="button"
+                      @click="removeEmail(email)"
+                      class="text-red-600 p-1 rounded-lg hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </label>
+                </li>
+              </ul>
+            </div>
+            <button
+              @click="removeSelectedEmails"
+              class="mt-2 px-4 py-2 bg-red-600 text-white rounded"
+              :disabled="selectedEmails.length === 0"
+            >
+              Delete Selected ({{ selectedEmails.length }})
+            </button>
+            <div class="mb-4">
+              <label class="block text-sm font-medium">Role</label>
+              <select v-model="editForm.role" class="w-full border p-2 rounded">
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                <!-- Sesuaikan dengan role yang tersedia -->
+              </select>
+            </div>
+          </form>
         </div>
       </div>
     </div>
-  </div>
+  </DashboardLayout>
 </template>
 <script setup>
-import { ref } from "vue";
-import AdminLayout from "@/layout/AdminLayout.vue";
-const users = ref([
-  {
-    id: "USR001",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "Admin",
-    status: "Active",
-    initials: "JD",
-  },
-  {
-    id: "USR002",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    role: "Editor",
-    status: "Active",
-    initials: "JS",
-  },
-  {
-    id: "USR003",
-    name: "Bob Johnson",
-    email: "bob@example.com",
-    role: "User",
-    status: "Inactive",
-    initials: "BJ",
-  },
-  {
-    id: "USR004",
-    name: "Alice Brown",
-    email: "alice@example.com",
-    role: "Admin",
-    status: "Active",
-    initials: "AB",
-  },
-  {
-    id: "USR005",
-    name: "Mike Wilson",
-    email: "mike@example.com",
-    role: "User",
-    status: "Pending",
-    initials: "MW",
-  },
-]);
+import DashboardLayout from "@/layout/DashboardLayout.vue";
+import { ref, onMounted } from "vue";
+import {
+  DeleteUser,
+  GetUser,
+  DeleteAllowList,
+  AddAllowlist,
+  AddUser,
+} from "@/services/userServices.js";
+import UserForm from "@/components/base/admin/form/UserForm.vue";
+const selectedEmails = ref([]);
+const users = ref([]);
+const newEmail = ref("");
+const showModal = ref(false);
+
+const showForm = ref(false);
+
+async function handleUserSubmit(data) {
+  try {
+    console.log(data);
+    await AddUser(data.username, data.password);
+
+    showForm.value = false;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    alert("Failed to register user");
+  }
+}
+const fetchUsers = async () => {
+  try {
+    const response = await GetUser();
+    users.value = response.data;
+  } catch (error) {
+    console.error("Error fetching users:", error);
+  }
+};
+const editForm = ref({
+  id: null,
+  allowlist_email: "",
+  role: "",
+});
+
+function openEditModal(user) {
+  editForm.value = {
+    id: user._id,
+    allowlist_email: user.allowedEmails || "",
+    role: user.role || "",
+  };
+  showModal.value = true;
+}
+const createUser = async (email, password) => {
+  try {
+    await AddUser(email, password);
+    fetchUsers();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+const deleteUser = async (id) => {
+  try {
+    await DeleteUser(id);
+    fetchUsers();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+const addEmail = async () => {
+  try {
+    await AddAllowlist(editForm.value.id, newEmail.value);
+    fetchUsers();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+const removeEmail = async (email) => {
+  try {
+    console.log(email);
+    await DeleteAllowList(editForm.value.id, email);
+    fetchUsers();
+  } catch (error) {
+    console.error("Error deleting user:", error);
+  }
+};
+function closeModal() {
+  showModal.value = false;
+}
+async function removeSelectedEmails() {
+  // Hapus dari object allowlist_email
+  selectedEmails.value.forEach(async (email) => {
+    await DeleteAllowList(editForm.value.id, email);
+  });
+  fetchUsers();
+  selectedEmails.value = []; // reset setelah hapus
+}
+async function saveChanges() {
+  try {
+    console.log("Saving user...", editForm.value);
+
+    // Setelah berhasil simpan:
+    closeModal();
+    fetchUsers();
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+onMounted(() => {
+  fetchUsers();
+});
 </script>
